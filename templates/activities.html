@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Posts count by month</h1>
+{% for mon, count in d_time_counts.iteritems(): %}
+<table class="table">
+  <tr>
+    <td>{{mon}}</td>
+      <td>{{count}}</td>
+  </tr>
+</table>
+{% endfor %}
+{% endblock %}

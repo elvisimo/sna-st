@@ -1,5 +1,5 @@
 import time
-
+import calendar
 from flask import Flask, request, render_template, session, redirect
 from instagram.client import InstagramAPI
 
@@ -42,8 +42,25 @@ def user_self():
 
 
 # reports page
-# @app.route('/reports')
-# def make_reports():
+@app.route('/activities')
+def show_activities():
+	#show media posts by month
+	d_time_media = {}
+	set_time_media = set()
+	all_media, next_url = api.user_recent_media(access_token=session['instagram_access_token'], count=15)
+	while next_url:
+		new_media, next_url = api.user_recent_media(access_token=session['instagram_access_token'], with_next_url=next_url, count=5)
+		all_media.extend(new_media)
+	for media in all_media:
+		month_abbr = calendar.month_abbr[media.created_time.month]
+		if month_abbr not in set_time_media:
+			set_time_media.add(month_abbr)
+			d_time_media.update({month_abbr: 1})
+		else:
+			d_time_media[month_abbr] += 1
+
+	return render_template("activities.html",
+	                       d_time_counts = d_time_media)
 
 
 # Redirect users to Instagram for login
